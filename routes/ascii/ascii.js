@@ -33,11 +33,14 @@ const handleRequest = (req, res) => {
 
     let file = null;
 
-    if (req.files.length) {
+    if (req.files && req.files.length) {
       file = req.files[0];
     }
 
-    let url = req.body.url ?? req.query.url;
+    const body = req.body || {};
+    const query = req.query || {};
+
+    let url = body.url ?? query.url;
 
     fileUtils
       .getFile(file, url)
@@ -45,8 +48,8 @@ const handleRequest = (req, res) => {
         if (resultObj.status === 'OK') {
           const buffer = resultObj.result;
 
-          let width = req.body.width ?? req.query.width;
-          let height = req.body.height ?? req.query.height;
+          let width = body.width ?? query.width;
+          let height = body.height ?? query.height;
 
           imgUtils
             .getImg(buffer, width, height)
@@ -57,12 +60,12 @@ const handleRequest = (req, res) => {
 
                 const pixels = resultObj.result.pixels;
 
-                let minAlpha = req.body.minAlpha ?? req.query.minAlpha;
-                let minRGB = req.body.minRGB ?? req.query.minRGB;
-                let cell = req.body.cell ?? req.query.cell;
-                let get = req.body.get ?? req.query.get;
-                let method = req.body.method ?? req.query.method;
-                let alphabet = req.body.alphabet ?? req.query.alphabet;
+                let minAlpha = body.minAlpha ?? query.minAlpha;
+                let minRGB = body.minRGB ?? query.minRGB;
+                let cell = body.cell ?? query.cell;
+                let get = body.get ?? query.get;
+                let method = body.method ?? query.method;
+                let alphabet = body.alphabet ?? query.alphabet;
 
                 if (checksUtils.checkAlpha(minAlpha).status !== 'OK') {
                   minAlpha = 1;
